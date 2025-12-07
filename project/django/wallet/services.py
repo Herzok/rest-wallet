@@ -94,7 +94,7 @@ class WalletOperations:
             WalletTransactions.objects.create(wallet=your_wallet, 
                                               text=f"{uuid_wallet} sent {v_data.get('amount')} to {v_data.get('recepient_uuid')}")
             
-            return serializer_your_wallet.data
+        return serializer_your_wallet.data
 
         
 
