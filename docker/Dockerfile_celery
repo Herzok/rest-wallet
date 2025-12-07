@@ -1,0 +1,9 @@
+# Используем официальный образ Python
+FROM python:latest
+
+# Устанавливаем рабочую директорию внутри контейнера
+WORKDIR /app
+
+# Устанавливаем пакеты
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt

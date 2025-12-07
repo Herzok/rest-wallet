@@ -1,0 +1,6 @@
+django
+psycopg2
+djoser
+djangorestframework
+celery
+redis

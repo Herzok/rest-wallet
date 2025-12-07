@@ -1,0 +1,71 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /tmpdata
+    volumes:
+      - pgdata:/tmpdata
+    networks:
+      - my_network
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+  
+  celery:
+    build: 
+      context: .
+      dockerfile: Dockerfile_celery
+    container_name: celery
+    command: celery -A celery_app.celery worker -l info
+    env_file:
+      - .env
+    volumes:
+      - ../project/django:/app
+    depends_on:
+    - redis
+    - django
+    networks:
+      - my_network
+    environment:
+    - DJANGO_SETTINGS_MODULE=rest_wallet.settings
+  
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+    - db
+    - redis
+    ports:
+      - "${BIND_IP}:${PORT}:8000"
+    networks:
+      - my_network
+    volumes:
+      - ../project/django:/app
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  pgdata:
