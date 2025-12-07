@@ -17,7 +17,7 @@ class WalletTestCase(APITestCase):
         
 
         self.wallet1 = Wallet.objects.create(user=self.user1, balance=5000)
-        self.wallet2 = Wallet.objects.create(user=self.user2, balance=1000, wallet=ADMIN_WALLET_UUID)
+        self.wallet2 = Wallet.objects.get(wallet=ADMIN_WALLET_UUID)
         self.wallet3 = Wallet.objects.create(user=self.user3, balance=2000)
 
         self.client = APIClient()
@@ -98,7 +98,7 @@ class WalletTestCase(APITestCase):
         wallet3_old_balance = self.wallet3.balance 
         self.wallet1 = Wallet.objects.get(user=self.user1) 
         self.wallet3 = Wallet.objects.get(user=self.user3) 
-        self.wallet2 = Wallet.objects.get(user=self.user2) 
+        self.wallet2 = Wallet.objects.get(wallet=ADMIN_WALLET_UUID)
         # test send money with tax 
         self.assertEqual(response.status_code, status.HTTP_200_OK) 
         self.assertEqual(self.wallet3.balance, wallet3_old_balance + 1200) 
