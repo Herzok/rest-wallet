@@ -10,7 +10,7 @@ class OperationTransactions:
         tax = None
         
         if amount > 1000:
-            tax = amount * 0.1
+            tax = round(amount * 0.1)
             total_amount = amount + tax
         else:
             total_amount = amount
